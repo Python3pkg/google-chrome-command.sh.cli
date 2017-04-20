@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+# close tab with given url
+
+usage="usage: ${BASH_SOURCE[0]##*/} url ..."
+
+[[ $# == 0 ]] || [[ $1 == "--help" ]] && {
+  echo "$usage"
+  [[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+app="Google Chrome"
+pid="$(app pid "$app")" || exit
+[[ -z $pid ]] && exit
+
+while [[ $# != 0 ]]; do
+	osascript <<EOF
+tell application "Google Chrome"                   
+  repeat with w in  every window
+    repeat with t in every tab in w
+      if "$1" is in (URL of t as text) then
+      	tell t to close
+      end if
+      end repeat
+  end repeat
+end tell
+EOF
+	shift
+done;:

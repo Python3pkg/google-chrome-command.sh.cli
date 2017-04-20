@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+# active tab url
+
+usage="usage: ${BASH_SOURCE[0]##*/}"
+
+[[ $1 == "--help" ]] && {
+  echo "$usage"
+  [[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+app="Google Chrome"
+pid="$(app pid "$app")" || exit
+[[ -z $pid ]] && exit
+
+osascript <<EOF
+tell application "Google Chrome"
+  if count of windows is not 0 then
+    URL of active tab of first window
+  end if
+end tell
+EOF
